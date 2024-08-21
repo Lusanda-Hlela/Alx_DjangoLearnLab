@@ -1,32 +1,19 @@
 from django.contrib import admin
-from .models import Book, CustomUser
+from django.contrib.auth.admin import UserAdmin
+from .models import CustomUser  # Make sure you import CustomUser from your models
 
-# Register your models here.
+# Define a custom admin class for your CustomUser model if not already defined
+class CustomUserAdmin(UserAdmin):
+    # You can customize the admin interface here.
+    # For example, define which fields to display in the list view:
+    list_display = ("username", "email", "first_name", "last_name", "is_staff")
+    list_filter = ("is_staff", "is_superuser", "is_active", "groups")
+    search_fields = ("username", "email", "first_name", "last_name")
+    ordering = ("username",)
+    filter_horizontal = (
+        "groups",
+        "user_permissions",
+    )
 
-@admin.register(Book)
-class BookAdmin(admin.ModelAdmin):
-  list_display = ("title", "author", "publication_year")
-  search_fields = ("title", "author")
-  list_filter = ["publication_year"]  # Must be a list or tuple
-
-
-@admin.register(CustomUser)
-class CustomUserAdmin(admin.ModelAdmin):
-  fieldsets = (
-    (None, {"fields": ("username", "password")}),
-    ("Personal info", {"fields": ("first_name", "last_name", "email")}),
-    (
-      "Permissions",
-      {
-        "fields": (
-          "is_active",
-          "is_staff",
-          "is_superuser",
-          "groups",
-          "user_permissions",
-        )
-      },
-    ),
-    ("Important dates", {"fields": ("last_login", "date_joined")}),
-    ("Additional Info", {"fields": ("date_of_birth", "profile_photo")}),
-  )
+# Register the CustomUser model with the custom admin class
+admin.site.register(CustomUser, CustomUserAdmin)
