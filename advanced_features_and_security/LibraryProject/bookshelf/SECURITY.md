@@ -47,3 +47,22 @@ We regularly test our application for vulnerabilities, including:
 - [OWASP Top Ten Security Risks](https://owasp.org/www-project-top-ten/)
 
 ## The above has been compiled with the help of Chatgpt IA
+
+# Security Configuration for LibraryProject
+
+## HTTPS and Secure Settings
+
+- **SECURE_SSL_REDIRECT**: Redirects all HTTP requests to HTTPS.
+- **SECURE_HSTS_SECONDS**: Configured to 1 year to enforce HTTPS.
+- **SECURE_HSTS_INCLUDE_SUBDOMAINS**: Ensures that all subdomains are included in the HSTS policy.
+- **SECURE_HSTS_PRELOAD**: Allows for HSTS preloading by browsers.
+- **SESSION_COOKIE_SECURE**: Ensures session cookies are only transmitted over HTTPS.
+- **CSRF_COOKIE_SECURE**: Ensures CSRF cookies are only transmitted over HTTPS.
+- **X_FRAME_OPTIONS**: Set to DENY to prevent clickjacking.
+- **SECURE_CONTENT_TYPE_NOSNIFF**: Prevents MIME-type sniffing.
+- **SECURE_BROWSER_XSS_FILTER**: Enables XSS filtering in browsers.
+
+## Deployment Configuration
+
+- SSL/TLS certificates obtained from Let's Encrypt.
+- Nginx configured to serve the site over HTTPS with strict security headers.

@@ -144,3 +144,42 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+# Security settings to enforce HTTPS and secure cookie transmission
+
+# SECURE_SSL_REDIRECT: Redirects all HTTP requests to HTTPS.
+# This setting is critical for production but not needed in local development.
+SECURE_SSL_REDIRECT = False if DEBUG else True
+
+# SECURE_HSTS_SECONDS: Instructs browsers to only access the site via HTTPS for the specified time.
+# Setting it to 31536000 (1 year) is recommended for production.
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+
+# SECURE_HSTS_INCLUDE_SUBDOMAINS: Applies the HSTS policy to all subdomains as well.
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True if not DEBUG else False
+
+# SECURE_HSTS_PRELOAD: Allows the site to be included in browsers' HSTS preload list.
+SECURE_HSTS_PRELOAD = True if not DEBUG else False
+
+# Cookie settings to enforce secure transmission over HTTPS
+
+# SESSION_COOKIE_SECURE: Ensures that session cookies are only sent over HTTPS.
+SESSION_COOKIE_SECURE = True
+
+# CSRF_COOKIE_SECURE: Ensures that CSRF cookies are only sent over HTTPS.
+CSRF_COOKIE_SECURE = True
+
+# HTTP Headers for additional security
+
+# X_FRAME_OPTIONS: Prevents your site from being framed to protect against clickjacking.
+X_FRAME_OPTIONS = "DENY"
+
+# SECURE_CONTENT_TYPE_NOSNIFF: Prevents browsers from MIME-sniffing a response away from the declared content-type.
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# SECURE_BROWSER_XSS_FILTER: Enables the browser's XSS filtering and helps prevent cross-site scripting attacks.
+SECURE_BROWSER_XSS_FILTER = True
+
+# For local development (i.e., without production domains and SSL certificates),
+# keep SECURE_SSL_REDIRECT set to False, as enabling it may cause issues without HTTPS.
+# In production, you'd enable it by setting SECURE_SSL_REDIRECT = True.
