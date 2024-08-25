@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -179,6 +180,10 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # SECURE_BROWSER_XSS_FILTER: Enables the browser's XSS filtering and helps prevent cross-site scripting attacks.
 SECURE_BROWSER_XSS_FILTER = True
+
+# Settings for handling reverse proxy and HTTPS redirection
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # For local development (i.e., without production domains and SSL certificates),
 # keep SECURE_SSL_REDIRECT set to False, as enabling it may cause issues without HTTPS.
