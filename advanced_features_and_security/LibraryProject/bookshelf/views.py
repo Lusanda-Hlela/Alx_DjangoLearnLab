@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect
 from .models import Book  # Import your Book model
-from .forms import BookForm
+from .forms import ExampleForm
 from django.http import HttpResponse
 
 
@@ -40,24 +40,24 @@ def add_book(request):
 def edit_book(request, book_id):
     book = Book.objects.get(id=book_id)
     if request.method == "POST":
-        form = BookForm(request.POST, instance=book)
+        form = ExampleForm(request.POST, instance=book)
         if form.is_valid():
             form.save()
             return redirect("book_list")
     else:
-        form = BookForm(instance=book)
+        form = ExampleForm(instance=book)
     return render(request, "bookshelf/edit_book.html", {"form": form})
 
 
 @permission_required("bookshelf.can_create", raise_exception=True)
 def add_book(request):
     if request.method == "POST":
-        form = BookForm(request.POST)
+        form = ExampleForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect("book_list")
     else:
-        form = BookForm()
+        form = ExampleForm()
     return render(request, "bookshelf/add_book.html", {"form": form})
 
 
