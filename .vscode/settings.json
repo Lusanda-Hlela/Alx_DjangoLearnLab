@@ -1,0 +1,20 @@
+{
+  "cSpell.ignoreWords": [
+    "lusanda"
+  ],
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "ALX_Connection",
+      "database": "alx_bookshelf",
+      "username": "lusanda"
+    }
+  ]
+}
