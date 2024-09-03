@@ -30,3 +30,5 @@ class DeleteView(generics.DestroyAPIView):
   queryset = Book.objects.all()
   serializer_class = BookSerializer
   permission_classes = [IsAuthenticatedOrReadOnly]
+
+__all__ = ["ListView", "DetailView", "CreateView", "UpdateView", "DeleteView"]
