@@ -4,12 +4,29 @@ from .models import Book, Author
 from .serializers import BookSerializer, AuthorSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
+# Add filtering, searching, and ordering functionality
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+
+
 class BookListView(generics.ListCreateAPIView):
   queryset = Book.objects.all()
   serializer_class = BookSerializer
   permission_classes = [
     IsAuthenticatedOrReadOnly
-  ] # Allows read for unauthenticated users
+  ]# Allows read for unauthenticated users
+
+  # Add filtering, search, and ordering backends
+  filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+  # Fields for filtering
+  filterset_fields = ["title", "author__name", "publication_year"]
+
+  # Fields for searching
+  search_fields = ["title", "author__name"]
+
+  # Fields for ordering
+  ordering_fields = ["title", "publication_year"]
 
   def perform_create(self, serializer):
     # Custom logic before saving the book (if needed)
@@ -75,7 +92,7 @@ class AuthorDetailView(generics.RetrieveUpdateDestroyAPIView):
   serializer_class = AuthorSerializer
   permission_classes = [
     IsAuthenticatedOrReadOnly
-  ]  # Allows read for unauthenticated users
+  ] # Allows read for unauthenticated users
 
   def perform_update(self, serializer):
     # Custom logic before updating the author (if needed)
