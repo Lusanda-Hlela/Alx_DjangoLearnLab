@@ -5,8 +5,9 @@ from .serializers import BookSerializer, AuthorSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 # Add filtering, searching, and ordering functionality
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as filters 
 from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend  # For filtering backend
 
 
 class BookListView(generics.ListCreateAPIView):
@@ -14,7 +15,7 @@ class BookListView(generics.ListCreateAPIView):
   serializer_class = BookSerializer
   permission_classes = [
     IsAuthenticatedOrReadOnly
-  ]# Allows read for unauthenticated users
+  ] # Allows read for unauthenticated users
 
   # Add filtering, search, and ordering backends
   filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
