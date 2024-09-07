@@ -6,11 +6,11 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 
 # Add filtering, searching, and ordering functionality
 from django_filters import rest_framework as filters
-from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend  # For filtering backend
 from filters import (
+    SearchFilter,
     OrderingFilter,
-)  # Ensure that 'filters.OrderingFilter' is part of the code
+)  # Ensure 'filters.SearchFilter' and 'filters.OrderingFilter' are part of the code
 
 
 class BookListView(generics.ListCreateAPIView):
