@@ -5,11 +5,10 @@ from .serializers import BookSerializer, AuthorSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 # Add filtering, searching, and ordering functionality
-from django_filters import rest_framework as filters 
-from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters import rest_framework as filters
+from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend  # For filtering backend
-
-
+from django_filters.rest_framework import OrderingFilter
 class BookListView(generics.ListCreateAPIView):
   queryset = Book.objects.all()
   serializer_class = BookSerializer
@@ -33,7 +32,6 @@ class BookListView(generics.ListCreateAPIView):
     # Custom logic before saving the book (if needed)
     serializer.save()
 
-
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
   queryset = Book.objects.all()
   serializer_class = BookSerializer
@@ -48,7 +46,6 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
   def perform_destroy(self, instance):
     # Custom logic before deleting the book (if needed)
     instance.delete()
-
 
 class BookCreateView(generics.CreateAPIView):
   queryset = Book.objects.all()
@@ -75,7 +72,6 @@ class BookDeleteView(generics.DestroyAPIView):
   serializer_class = BookSerializer
   permission_classes = [IsAuthenticated]  # Only authenticated users can delete
 
-
 class AuthorListView(generics.ListCreateAPIView):
   queryset = Author.objects.all()
   serializer_class = AuthorSerializer
@@ -86,7 +82,6 @@ class AuthorListView(generics.ListCreateAPIView):
   def perform_create(self, serializer):
     # Custom logic before saving the author (if needed)
     serializer.save()
-
 
 class AuthorDetailView(generics.RetrieveUpdateDestroyAPIView):
   queryset = Author.objects.all()
