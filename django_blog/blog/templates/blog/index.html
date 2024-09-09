@@ -1,0 +1,26 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Django Blog</title>
+  <!-- Link the CSS file -->
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/styles.css' %}">
+</head>
+<body>
+  <header>
+    <h1>Welcome to My Django Blog</h1>
+  </header>
+
+  <main>
+    <h2>Blog Posts</h2>
+    <p>This is a simple blog post page. More features coming soon!</p>
+  </main>
+
+  <!-- Link the JavaScript file -->
+  <script src="{% static 'blog/scripts.js' %}"></script>
+</body>
+</html>
