@@ -1,9 +1,16 @@
+# blog/views.py
+
 from django.shortcuts import render
 
-# Create your views here.
+def home(request):
+  return render(request, 'blog/base.html')
 
+def posts(request):
+  return render(request, 'blog/base.html')
 
-def index(request):
-  return render(
-    request, "blog/index.html"
-  )  # Make sure the path matches your template folder
+def login_view(request):
+  return render(request, 'blog/base.html')
+
+def register(request):
+  return render(request, 'blog/base.html')
+

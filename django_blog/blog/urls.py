@@ -1,8 +1,11 @@
 # blog/urls.py
 
 from django.urls import path
-from . import views  # Import your views
+from . import views
 
 urlpatterns = [
-  path("", views.index, name="index"),  # This links the root URL to the index view
+  path('', views.home, name='home'),
+  path('posts/', views.posts, name='posts'),
+  path('login/', views.login_view, name='login'),
+  path('register/', views.register, name='register'),
 ]
