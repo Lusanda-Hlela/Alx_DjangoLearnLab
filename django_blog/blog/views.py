@@ -88,6 +88,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 # Update a post (only the author can edit)
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = Post
+  fields = ['title', 'content']
+  template_name = 'blog/post_form.html' 
   form_class = PostForm
 
   def form_valid(self, form):
