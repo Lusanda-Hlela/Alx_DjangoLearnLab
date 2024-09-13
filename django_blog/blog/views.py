@@ -3,14 +3,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView,DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import CustomUserCreationForm, UserProfileForm, PostForm
-from .models import Post
+from .forms import CustomUserCreationForm, UserProfileForm, PostForm, CommentForm
+from .models import Post, Comment
+
 
 # Home view
 def home(request):
   return render(request, "blog/base.html")
+
 
 # Registration view
 def register(request):
@@ -24,6 +26,7 @@ def register(request):
   else:
     form = CustomUserCreationForm()
   return render(request, "blog/register.html", {"form": form})
+
 
 # Login view
 def login_view(request):
@@ -44,11 +47,37 @@ def login_view(request):
   form = AuthenticationForm()
   return render(request, "blog/login.html", {"form": form})
 
+
 # Logout view
 def logout_view(request):
   logout(request)
   messages.success(request, "Logged out successfully")
   return redirect("home")
+
+
+# Post detail view with comments
+def post_detail(request, pk):
+  post = get_object_or_404(Post, pk=pk)
+  comments = post.comments.all()
+
+  if request.method == "POST":
+    comment_form = CommentForm(request.POST)
+    if comment_form.is_valid():
+      comment = comment_form.save(commit=False)
+      comment.post = post
+      comment.author = request.user
+      comment.save()
+      return redirect("post-detail", pk=pk)
+  else:
+    comment_form = CommentForm()
+
+  context = {
+      "post": post,
+      "comments": comments,
+      "comment_form": comment_form,
+  }
+  return render(request, "blog/post_detail.html", context)
+
 
 # Profile view
 @login_required
@@ -63,18 +92,53 @@ def profile(request):
     form = UserProfileForm(instance=request.user)
   return render(request, "blog/profile.html", {"form": form})
 
+
+# Edit comment
+@login_required
+def comment_edit(request, pk):
+  comment = get_object_or_404(Comment, pk=pk)
+  if request.user != comment.author:
+    return redirect("post-detail", pk=comment.post.pk)
+
+  if request.method == "POST":
+    form = CommentForm(request.POST, instance=comment)
+    if form.is_valid():
+      form.save()
+      return redirect("post-detail", pk=comment.post.pk)
+  else:
+    form = CommentForm(instance=comment)
+
+  context = {
+    "form": form,
+    "comment": comment,
+  }
+  return render(request, "blog/comment_edit.html", context)
+
+
+# Delete comment
+@login_required
+def comment_delete(request, pk):
+  comment = get_object_or_404(Comment, pk=pk)
+  post_pk = comment.post.pk
+  if request.user == comment.author:
+    comment.delete()
+  return redirect("post-detail", pk=post_pk)
+
+
 # CRUD Views for Blog Posts
 
 # List all posts
 class PostListView(ListView):
   model = Post
-  template_name = 'blog/post_list.html'  # <app>/<model>_<viewtype>.html
-  context_object_name = 'posts'
-  ordering = ['-published_date']
+  template_name = "blog/post_list.html"  # <app>/<model>_<viewtype>.html
+  context_object_name = "posts"
+  ordering = ["-published_date"]
+
 
 # View a single post in detail
 class PostDetailView(DetailView):
   model = Post
+
 
 # Create a new post (only for logged-in users)
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -85,11 +149,12 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     form.instance.author = self.request.user
     return super().form_valid(form)
 
+
 # Update a post (only the author can edit)
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = Post
-  fields = ['title', 'content']
-  template_name = 'blog/post_form.html' 
+  fields = ["title", "content"]
+  template_name = "blog/post_form.html"
   form_class = PostForm
 
   def form_valid(self, form):
@@ -104,7 +169,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 # Delete a post (only the author can delete)
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   model = Post
-  success_url = '/'
+  success_url = "/"
 
   def test_func(self):
     post = self.get_object()
