@@ -3,7 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm, UserProfileForm, PostForm, CommentForm
@@ -98,22 +104,22 @@ def profile(request):
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
-    template_name = 'blog/comment_form.html'
+    template_name = "blog/comment_form.html"
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        form.instance.post_id = self.kwargs['pk']  # Assuming 'pk' is for the post the comment belongs to
+        form.instance.post_id = self.kwargs["pk"]
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
+        return reverse_lazy("post-detail", kwargs={"pk": self.object.post.pk})
 
 
 # Comment Update View
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
     form_class = CommentForm
-    template_name = 'blog/comment_form.html'
+    template_name = "blog/comment_form.html"
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -121,41 +127,37 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         comment = self.get_object()
-        return self.request.user == comment.author  # Only allow the author to update their own comment
+        return self.request.user == comment.author
 
     def get_success_url(self):
-        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
+        return reverse_lazy("post-detail", kwargs={"pk": self.object.post.pk})
 
 
 # Comment Delete View
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
-    template_name = 'blog/comment_confirm_delete.html'
+    template_name = "blog/comment_confirm_delete.html"
 
     def test_func(self):
         comment = self.get_object()
-        return self.request.user == comment.author  # Only allow the author to delete their own comment
+        return self.request.user == comment.author
 
     def get_success_url(self):
-        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
+        return reverse_lazy("post-detail", kwargs={"pk": self.object.post.pk})
 
 
 # CRUD Views for Blog Posts
-
-# List all posts
 class PostListView(ListView):
     model = Post
-    template_name = "blog/post_list.html"  # <app>/<model>_<viewtype>.html
+    template_name = "blog/post_list.html"
     context_object_name = "posts"
     ordering = ["-published_date"]
 
 
-# View a single post in detail
 class PostDetailView(DetailView):
     model = Post
 
 
-# Create a new post (only for logged-in users)
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
@@ -165,11 +167,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-# Update a post (only the author can edit)
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ["title", "content"]
-    template_name = "blog/post_form.html"
     form_class = PostForm
 
     def form_valid(self, form):
@@ -181,7 +180,6 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == post.author
 
 
-# Delete a post (only the author can delete)
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     success_url = "/"

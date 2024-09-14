@@ -2,13 +2,13 @@
 
 {% block content %}
   <article>
-    <h2>{{ object.title }}</h2>
-    <p>{{ object.content }}</p>
-    <p><small>Posted by {{ object.author }} on {{ object.date_posted }}</small></p>
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+    <p><small>Posted by {{ post.author }} on {{ post.date_posted }}</small></p>
 
-    {% if user == object.author %}
-      <a href="{% url 'post-update' object.pk %}" class="btn btn-info">Edit</a>
-      <a href="{% url 'post-delete' object.pk %}" class="btn btn-danger">Delete</a>
+    {% if user == post.author %}
+      <a href="{% url 'post-update' post.pk %}" class="btn btn-info">Edit</a>
+      <a href="{% url 'post-delete' post.pk %}" class="btn btn-danger">Delete</a>
     {% endif %}
   </article>
 
@@ -19,7 +19,7 @@
 
   <!-- Display existing comments -->
   <ul class="list-group">
-    {% for comment in object.comments.all %}
+    {% for comment in post.comments.all %}
       <li class="list-group-item">
         <p><strong>{{ comment.author }}</strong> ({{ comment.created_at|date:"F j, Y, g:i a" }}):</p>
         <p>{{ comment.content }}</p>
