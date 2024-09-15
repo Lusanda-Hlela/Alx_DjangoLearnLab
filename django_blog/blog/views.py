@@ -13,6 +13,7 @@ from .forms import PostForm, CommentForm
 from django.db.models import Q
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from taggit.models import Tag  # Import Tag for tag filtering
 
 
 # User authentication views
@@ -165,3 +166,20 @@ class SearchResultsView(ListView):
             | Q(content__icontains=query)
             | Q(tags__name__icontains=query)  # Added search functionality for tags
         )
+
+
+# View to display posts by tag
+class PostByTagListView(ListView):
+    model = Post
+    template_name = "blog/post_list.html"
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get("tag_slug")
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        return Post.objects.filter(tags__in=[tag])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tag"] = get_object_or_404(Tag, slug=self.kwargs.get("tag_slug"))
+        return context

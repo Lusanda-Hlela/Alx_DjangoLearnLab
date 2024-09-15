@@ -10,6 +10,7 @@ from .views import (
     CommentUpdateView,
     CommentDeleteView,
     SearchResultsView,
+    PostByTagListView,  # Add PostByTagListView for tag filtering
 )
 
 urlpatterns = [
@@ -33,7 +34,9 @@ urlpatterns = [
     # Search URL
     path("search/", SearchResultsView.as_view(), name="search-results"),
     # Tags URL
-    path("tag/<slug:slug>/", PostListView.as_view(), name="posts-by-tag"),
+    path(
+        "tags/<slug:tag_slug>/", PostByTagListView.as_view(), name="posts-by-tag"
+    ),  # Updated URL for tag filtering
     # User Authentication URLs
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
