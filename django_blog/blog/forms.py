@@ -2,14 +2,14 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Post, Comment
-from taggit.forms import TagField
+from taggit.forms import TagField, TagWidget  # Import TagField and TagWidget
 
 class CustomUserCreationForm(UserCreationForm):
   email = forms.EmailField(required=True)
-
   class Meta:
     model = User
     fields = ("username", "email", "password1", "password2")
+
 
 class UserProfileForm(forms.ModelForm):
   email = forms.EmailField(required=True)
@@ -17,26 +17,22 @@ class UserProfileForm(forms.ModelForm):
     model = User
     fields = ("username", "email")
 
+
 class PostForm(forms.ModelForm):
+  tags = TagField(required=False)
   class Meta:
     model = Post
-    fields = ["title", "content"]
-
-
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ["content"]
-        widgets = {
-      "content": forms.Textarea(
-          attrs={"rows": 3, "placeholder": "Add a comment..."}
-        ),
+    fields = ["title", "content", "tags"]  # Include 'tags' field
+    widgets = {
+      "tags": TagWidget(),  # Use TagWidget for 'tags' field
     }
 
-
-class PostForm(forms.ModelForm):
-  tags = TagField(required=False)  # This will allow users to add tags
-
+class CommentForm(forms.ModelForm):
   class Meta:
-    model = Post
-    fields = ["title", "content", "tags"]
+    model = Comment
+    fields = ["content"]
+    widgets = {
+      "content": forms.Textarea(
+        attrs={"rows": 3, "placeholder": "Add a comment..."}
+      ),
+    }

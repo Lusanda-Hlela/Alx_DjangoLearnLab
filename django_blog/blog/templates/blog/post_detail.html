@@ -4,12 +4,18 @@
   <article>
     <h2>{{ post.title }}</h2>
     <p>{{ post.content }}</p>
-    <p><small>Posted by {{ post.author }} on {{ post.date_posted }}</small></p>
+    <p><small>Posted by {{ post.author }} on {{ post.published_date }}</small></p>
+    
+    <!-- Display tags -->
     <p>Tags: 
-    {% for tag in object.tags.all %}
+      {% for tag in post.tags.all %}
         <a href="{% url 'posts-by-tag' tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
-    {% endfor %}
+      {% empty %}
+        No tags.
+      {% endfor %}
     </p>
+
+    <!-- Edit/Delete Buttons for Post Author -->
     {% if user == post.author %}
       <a href="{% url 'post-update' post.pk %}" class="btn btn-info">Edit</a>
       <a href="{% url 'post-delete' post.pk %}" class="btn btn-danger">Delete</a>
@@ -28,7 +34,7 @@
         <p><strong>{{ comment.author }}</strong> ({{ comment.created_at|date:"F j, Y, g:i a" }}):</p>
         <p>{{ comment.content }}</p>
 
-        <!-- Only show edit and delete options if the user is the comment author -->
+        <!-- Edit/Delete for Comment Author -->
         {% if user == comment.author %}
           <a href="{% url 'comment-edit' comment.pk %}" class="btn btn-sm btn-warning">Edit</a>
           <a href="{% url 'comment-delete' comment.pk %}" class="btn btn-sm btn-danger">Delete</a>
@@ -41,7 +47,7 @@
 
   <hr>
 
-  <!-- Comment Form (only visible to authenticated users) -->
+  <!-- Comment Form for Authenticated Users -->
   {% if user.is_authenticated %}
     <h3>Leave a Comment:</h3>
     <form method="POST">
