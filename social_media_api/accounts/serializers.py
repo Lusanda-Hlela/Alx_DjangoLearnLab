@@ -12,13 +12,19 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     extra_kwargs = {'password': {'write_only': True}}
 
   def create(self, validated_data):
+    # Use create_user to ensure password is hashed
     user = User.objects.create_user(
       username=validated_data['username'],
       email=validated_data['email'],
-      bio=validated_data.get('bio', ''),
-      profile_picture=validated_data.get('profile_picture', None),
-      password=validated_data['password']  # Automatically hashes the password
+      password=validated_data['password']  # Password is automatically hashed
     )
+    
+    # Set additional fields
+    user.bio = validated_data.get('bio', '')
+    user.profile_picture = validated_data.get('profile_picture', None)
+    user.save()
+    
+    # Create an authentication token for the user
     Token.objects.create(user=user)
     return user
 
