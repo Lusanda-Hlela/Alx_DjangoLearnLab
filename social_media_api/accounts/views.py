@@ -8,7 +8,7 @@ from .serializers import UserRegistrationSerializer, UserLoginSerializer
 from posts.serializers import PostSerializer
 from posts.models import Post
 
-
+# permissions.IsAuthenticated
 class UserRegistrationView(generics.GenericAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserRegistrationSerializer
