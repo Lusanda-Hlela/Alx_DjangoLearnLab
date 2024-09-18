@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from .models import CustomUser
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer
 from posts.serializers import PostSerializer
 from posts.models import Post
 
@@ -32,15 +32,19 @@ class UserLoginView(generics.GenericAPIView):
       return Response({"token": token.key}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# View for following another user
 class FollowUserView(generics.GenericAPIView):
   permission_classes = [IsAuthenticated]
   queryset = CustomUser.objects.all()
 
   def post(self, request, user_id):
     user_to_follow = get_object_or_404(CustomUser, id=user_id)
+    if user_to_follow == request.user:
+      return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
     request.user.following.add(user_to_follow)
     return Response({"detail": "User followed successfully"}, status=status.HTTP_200_OK)
 
+# View for unfollowing a user
 class UnfollowUserView(generics.GenericAPIView):
   permission_classes = [IsAuthenticated]
   queryset = CustomUser.objects.all()
@@ -50,6 +54,7 @@ class UnfollowUserView(generics.GenericAPIView):
     request.user.following.remove(user_to_unfollow)
     return Response({"detail": "User unfollowed successfully"}, status=status.HTTP_200_OK)
 
+# View for showing the feed with posts from followed users
 class FeedView(generics.GenericAPIView):
   permission_classes = [IsAuthenticated]
   queryset = CustomUser.objects.all()
