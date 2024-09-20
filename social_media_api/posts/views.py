@@ -3,8 +3,6 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 
-# permissions.IsAuthenticated
-
 # Post view for handling posts CRUD operations
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
