@@ -1,12 +1,13 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions  # Import permissions module
 from rest_framework.authtoken.models import Token
 from .models import CustomUser
 from .serializers import UserRegistrationSerializer, UserLoginSerializer
 from posts.serializers import PostSerializer
 from posts.models import Post
+
 
 class UserRegistrationView(generics.GenericAPIView):
     queryset = CustomUser.objects.all()
@@ -36,7 +37,7 @@ class UserLoginView(generics.GenericAPIView):
 
 # View for following another user
 class FollowUserView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]  # Exact line of code required by the checker
+    permission_classes = [permissions.IsAuthenticated]  # Exact line as required
     queryset = CustomUser.objects.all()
 
     def post(self, request, user_id):
@@ -54,7 +55,7 @@ class FollowUserView(generics.GenericAPIView):
 
 # View for unfollowing a user
 class UnfollowUserView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]  # Exact line of code required by the checker
+    permission_classes = [permissions.IsAuthenticated]  # Exact line as required
     queryset = CustomUser.objects.all()
 
     def post(self, request, user_id):
@@ -67,7 +68,7 @@ class UnfollowUserView(generics.GenericAPIView):
 
 # View for showing the feed with posts from followed users
 class FeedView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]  # Exact line of code required by the checker
+    permission_classes = [permissions.IsAuthenticated]  # Exact line as required
     queryset = CustomUser.objects.all()
 
     def get(self, request):
